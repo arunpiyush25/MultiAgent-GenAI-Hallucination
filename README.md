@@ -47,16 +47,12 @@ The entire framework was implemented in **n8n**, where each agent is a modular n
 ---
 
 ## 📈 Evaluation Results
-We manually annotated outputs across DSA queries and measured:  
+- Hallucination Reduction: The framework reduced hallucinations in 40% of cases — 20% improved in terms od space complexity(SC), and 20% in time complexity (TC).
+- Correctness Enhancement: 30% of answers were correct at the Creator stage, while an additional 20% were corrected by the Refiner Agent.
+- Beyond Ground Truth: 20% of responses were categorized as better than optimal, showing enhanced reasoning potential.
+- Remaining Challenges: 40% of responses still showed hallucinations — 20% due to SC and 20% due to TC limitations, indicating areas for further agent refinement.
 
-- **Hallucination Reduction**:  
-  - Refiner improved factual correctness by **20%+** compared to Creator alone.  
-- **Trade-offs**:  
-  - Slight increase in latency (1.2–1.5x).  
-  - Growth in token size due to reasoning propagation.  
-- **Key Insight**: Modular multi-agent reasoning consistently outperformed single-prompt responses.  
-
-*(Insert result charts, e.g., Creator vs Refiner correctness pie charts)*  
+*(see the inserted result charts in result folder)*  
 
 ---
 
