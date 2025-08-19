@@ -69,10 +69,10 @@ We manually annotated outputs across DSA queries and measured:
 ---
 
 ## 📂 Repository Structure
-README.md # Project documentation
-workflow.json # n8n exported workflow (multi-agent pipeline)
-workflow.png # Workflow diagram (screenshot)
-results/ # Evaluation charts & sample outputs
+- README.md # Project documentation
+- workflow.json # n8n exported workflow (multi-agent pipeline)
+- workflow.png # Workflow diagram (screenshot)
+- results/ # Evaluation charts & sample outputs
 
 
 ---
