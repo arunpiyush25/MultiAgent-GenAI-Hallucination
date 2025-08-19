@@ -1,0 +1,671 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -304,
+        -240
+      ],
+      "id": "03a31457-5cbb-4c70-8266-32ab9db3e0df",
+      "name": "When chat message received",
+      "webhookId": "b9d39a6f-89aa-4972-8ccf-abdab5e5c3bf"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        128
+      ],
+      "id": "7b753a71-1250-40ed-8f15-8b8340ade92f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OdaJRyQ0u0Q5f1s5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "messages": {
+          "messageValues": [
+            {
+              "type": "HumanMessagePromptTemplate",
+              "message": "=You are a helpful DSA tutor. Explain the below question in short, clearly and concisely. Programming language preferred is C++ without comments in the code. \nAnswer in respective fromat:-\nExplanation:\ncode:\nTime Complexity:\nSpace Complexity:\nPerform the task very fast & give the above mentioned details only.\n{{ $json.chatInput }}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        80,
+        -240
+      ],
+      "id": "c9111415-ee99-4c85-9260-873e9a284d5e",
+      "name": "Creator Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        720,
+        416
+      ],
+      "id": "5278ef3e-e1c2-44f8-bf42-de33e2cd89d2",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OdaJRyQ0u0Q5f1s5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a DSA content reviewer. Your task is to analyze the explanation provided below and critique it for:-\nFactual accuracy:\nRelevance:\nTime Complexity:\nSuggest improvements if necessary.\nPerform the task very fast & give the above mentioned details only.\nCreator's Output: {{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        592,
+        96
+      ],
+      "id": "d00ebe5e-3995-49ef-a86c-ec6b255a5319",
+      "name": "Critic Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1392,
+        416
+      ],
+      "id": "051dd35c-395c-4bbf-8cdd-a85b83f4699e",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OdaJRyQ0u0Q5f1s5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a fact-verification agent. Review the explanation below and point out:\n\"Any hallucinations or unsupported claims\":\n\"Any vague or ambiguous points\"\n\"Anything that needs citations or clarification\":\nPerform the task very fast & give the above mentioned details only.\nExplanation: \"{{ $json.text }}\"",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1264,
+        96
+      ],
+      "id": "9a8bc96d-d246-4d41-89af-e7d7948cf395",
+      "name": "Verifier Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2096,
+        400
+      ],
+      "id": "defb7508-32ea-4ae1-914e-e9ff8275bb20",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OdaJRyQ0u0Q5f1s5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a master DSA tutor. Refine the following explanation using the provided critiques and verifications. Make it more accurate, precise, and helpful for learners. \nCreator’s original answer: {{ $('Creator Agent').item.json.text }}\nCritic’s suggestions: {{ $('Critic Agent').item.json.text }}\nVerifier’s fact-checking feedback: {{ $json.text }}\nDo not write the first intro paragraph. Perform the task very fast & do the above mentioned task only.Do not right comments in the code.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1936,
+        96
+      ],
+      "id": "63795b68-0403-42a3-933f-5ff111c53b08",
+      "name": "Refiner Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2864,
+        416
+      ],
+      "id": "314ab609-ade9-4a68-b5aa-897622d5991e",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "OdaJRyQ0u0Q5f1s5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Metric Calculation/Checking agent. Do the below task promptly without giving any extra information other than that is asked.\nExplain the 3 metrics clearly by comparing the output of Creator's agent & Refiner agent:\nLogical Accuracy Improvement: Give me one answer with short explanation (Improved/Degraded/No Change) \nTime Complexity: Give me direct answer with short explanation. What is the time complexity?\nSpace Complexity:Give me direct answer with short explanation. what is the space complexity.\nCreator's response: {{ $('Creator Agent').item.json.text }}\nRefiner's Response: {{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        2704,
+        96
+      ],
+      "id": "b7b1a8c9-21a4-487a-9a22-0b122c8222bf",
+      "name": "Metric Agent"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2320,
+        -224
+      ],
+      "id": "14ff3a98-0cea-433d-b5c9-9310b7006873",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2992,
+        -656
+      ],
+      "id": "bc72989a-275a-454b-be7f-42b00b0a9418",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1JntKoMT6A58f9MPYyaDaRNxGvIhK_5o3oo_nrN_3p4Y",
+          "mode": "list",
+          "cachedResultName": "n8n-DataSpreadsheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JntKoMT6A58f9MPYyaDaRNxGvIhK_5o3oo_nrN_3p4Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Phase ||",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JntKoMT6A58f9MPYyaDaRNxGvIhK_5o3oo_nrN_3p4Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Creator Agent": "={{ $('Creator Agent').item.json.text }}",
+            "Critic Agent": "={{ $('Critic Agent').item.json.text }}",
+            "Verifier Agent": "={{ $('Verifier Agent').item.json.text }}",
+            "Refiner Agent": "={{ $('Refiner Agent').item.json.text }}",
+            "Metric Agent": "={{ $('Metric Agent').item.json.text }}"
+          },
+          "matchingColumns": [
+            "Creator Agent"
+          ],
+          "schema": [
+            {
+              "id": "Creator Agent",
+              "displayName": "Creator Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Critic Agent",
+              "displayName": "Critic Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Verifier Agent",
+              "displayName": "Verifier Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Refiner Agent",
+              "displayName": "Refiner Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Metric Agent",
+              "displayName": "Metric Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        3232,
+        -608
+      ],
+      "id": "105769e8-f53b-4fe0-92a8-ca41b5f23af2",
+      "name": "Append or update row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KL9qWxRZYmhzTbAg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9919a3a-c0b0-4d50-99e8-4b4c74f94a04",
+              "name": "Creator Agent",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        -672
+      ],
+      "id": "7baf2fea-722b-4013-be05-bd0733c7f51a",
+      "name": "Edit1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9919a3a-c0b0-4d50-99e8-4b4c74f94a04",
+              "name": "VerifierAgent",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        -464
+      ],
+      "id": "18e031ae-4330-49e0-9d1a-650b042c9e2f",
+      "name": "Edit2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9919a3a-c0b0-4d50-99e8-4b4c74f94a04",
+              "name": "Refiner Agent",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2000,
+        -400
+      ],
+      "id": "6abdc3a8-bc75-43cc-ab90-17da10bb8dee",
+      "name": "Edit3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9919a3a-c0b0-4d50-99e8-4b4c74f94a04",
+              "name": "Critic Agent",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        -576
+      ],
+      "id": "a99602da-bf69-4d99-ad08-c314b5b5bec7",
+      "name": "Edit5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a9919a3a-c0b0-4d50-99e8-4b4c74f94a04",
+              "name": "Metric Agent",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2656,
+        -400
+      ],
+      "id": "87168588-456b-4387-8747-87f275c7728f",
+      "name": "Edit"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Creator Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Creator Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Creator Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Critic Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Critic Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Verifier Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Critic Agent": {
+      "main": [
+        [
+          {
+            "node": "Verifier Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Refiner Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifier Agent": {
+      "main": [
+        [
+          {
+            "node": "Refiner Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Metric Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refiner Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Edit3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Metric Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metric Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Append or update row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Edit3": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Edit5": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Edit": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4f2ebb2f-87fa-4736-9a3a-2759ed7fdf01",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "11d85195b339e3013573c41d80d34d839e91e479ef686f958882bf3e6bb57a17"
+  },
+  "id": "8Ly0GgY9azUS8FOM",
+  "tags": []
+}
